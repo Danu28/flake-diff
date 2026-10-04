@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Shop — Flake Diff Sample App</title>
+<style>
+  *{box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+  body{margin:0;background:#f8fafc;color:#0f172a}
+  .nav{background:#0f172a;color:#fff;padding:12px 20px;display:flex;justify-content:space-between;align-items:center}
+  .nav a{color:#cbd5e1;text-decoration:none;margin-left:12px;font-size:13px}
+  .nav a.active{color:#fff;font-weight:700;border-bottom:2px solid #6366f1}
+  .wrap{max-width:780px;margin:24px auto;padding:0 16px}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .btn{background:#4f46e5;color:#fff;border:0;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-ghost{background:#fff;border:1px solid #e2e8f0;color:#0f172a}
+  input{width:100%;padding:10px;border:1px solid #e2e8f0;border-radius:10px;margin:6px 0 12px}
+  .product{border:1px solid #e2e8f0;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .badge{padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:#f1f5f9;border:1px solid #e2e8f0}
+  .error{background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;padding:10px;border-radius:10px;margin-top:12px;font-size:13px;display:none}
+  .hint{color:#64748b;font-size:12px}
+</style>
+</head>
+<body>
+<div class="nav">
+  <div><b>Demo Shop</b> <span style="font-size:11px;color:#94a3b8">— flake demo (?flake=1 hides Pay)</span></div>
+  <div>
+    <a href="#login" id="nav-login">Login</a>
+    <a href="#products" id="nav-products">Products</a>
+    <a href="#checkout" id="nav-checkout">Checkout <span id="cartCount" class="badge">0</span></a>
+  </div>
+</div>
+<div class="wrap">
+  <!-- LOGIN -->
+  <div id="view-login" class="card">
+    <h2>Login</h2>
+    <p class="hint">Any username/password works. Deterministic flow for Selenium.</p>
+    <label>Username</label><input id="username" data-testid="input-username" placeholder="tester">
+    <label>Password</label><input id="password" data-testid="input-password" type="password" placeholder="••••">
+    <button class="btn" data-testid="btn-login" onclick="doLogin()">Login → Products</button>
+    <div class="hint">Sets <code>localStorage.token</code> and goes to #products</div>
+  </div>
+  <!-- PRODUCTS -->
+  <div id="view-products" class="card" style="display:none">
+    <h2>Products</h2>
+    <div class="product" data-testid="product-1"><div><b>Widget A</b> — $10</div><button class="btn" data-testid="btn-add-1" onclick="addToCart(1)">Add to Cart</button></div>
+    <div class="product" data-testid="product-2"><div><b>Widget B</b> — $20</div><button class="btn" data-testid="btn-add-2" onclick="addToCart(2)">Add to Cart</button></div>
+    <div class="product" data-testid="product-3"><div><b>Widget C</b> — $30</div><button class="btn" data-testid="btn-add-3" onclick="addToCart(3)">Add to Cart</button></div>
+    <div style="margin-top:14px;display:flex;gap:8px">
+      <button class="btn" data-testid="btn-go-checkout" onclick="location.hash='#checkout'">Go to Checkout →</button>
+      <button class="btn-ghost" onclick="clearCart()">Clear Cart</button>
+    </div>
+  </div>
+  <!-- CHECKOUT -->
+  <div id="view-checkout" class="card" style="display:none">
+    <h2>Checkout</h2>
+    <p id="checkoutBody" data-testid="checkout-body">Review your cart and pay.</p>
+    <div id="cartDetails" class="hint"></div>
+    <button class="btn" data-testid="btn-pay" onclick="doPay()">Pay $ <span id="payAmount">0</span></button>
+    <div id="payError" class="error" data-testid="error-msg"></div>
+    <div id="paySuccess" style="display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:10px;border-radius:10px;margin-top:12px" data-testid="success-msg">Payment success! Order #12345</div>
+  </div>
+</div>
+<script>
+// hash routing
+function router(){
+  const h = location.hash || '#login';
+  document.getElementById('view-login').style.display = h.startsWith('#login') ? 'block' : 'none';
+  document.getElementById('view-products').style.display = h.startsWith('#products') ? 'block' : 'none';
+  document.getElementById('view-checkout').style.display = h.startsWith('#checkout') ? 'block' : 'none';
+  document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active', a.getAttribute('href')===h.split('?')[0]));
+  if(h.startsWith('#checkout')) renderCheckout();
+  updateCart();
+}
+window.addEventListener('hashchange', router);
+router();
+
+// login
+function doLogin(){
+  const u=document.getElementById('username').value||'tester';
+  localStorage.setItem('token','token-'+u+'-'+Date.now());
+  localStorage.setItem('user',u);
+  location.hash='#products';
+}
+// cart
+function addToCart(id){
+  const cart=JSON.parse(localStorage.getItem('cart')||'[]');
+  cart.push(id);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCart();
+}
+function clearCart(){ localStorage.removeItem('cart'); updateCart(); renderCheckout(); }
+function updateCart(){
+  const cart=JSON.parse(localStorage.getItem('cart')||'[]');
+  document.getElementById('cartCount').textContent=cart.length;
+  const amt=cart.length*10; // simplified
+  const el=document.getElementById('payAmount'); if(el) el.textContent=amt;
+  const d=document.getElementById('cartDetails');
+  if(d) d.textContent= cart.length ? `Cart: ${cart.length} items (IDs: ${cart.join(',')})` : 'Cart is empty';
+}
+
+function renderCheckout(){
+  const isFlake = location.href.includes('flake=1') || location.href.includes('flake');
+  const btn=document.querySelector('[data-testid="btn-pay"]');
+  const body=document.getElementById('checkoutBody');
+  const err=document.getElementById('payError');
+  // ensure hook array exists for FlakeSnapshot capture
+  window.__flakeErrors = window.__flakeErrors || [];
+  window.__flakeWarnings = window.__flakeWarnings || [];
+  if(isFlake){
+    if(btn) btn.remove(); // remove from DOM so testIds count shows missing (better diff than display:none)
+    if(body) body.textContent='Error: payment service unavailable — btn-pay hidden (flake mode)';
+    if(err){ err.style.display='block'; err.textContent='Failed to fetch /api/pay 500 — flake injected via ?flake=1'; }
+    const e1='TypeError: Cannot read property pay of null at checkout.js:42';
+    const e2='Failed to fetch /api/pay 500';
+    const w1='slow: checkout render took 2500ms in flake mode';
+    window.__flakeErrors.push(e1,e2);
+    window.__flakeWarnings.push(w1);
+    console.error(e1);
+    console.error(e2);
+    console.warn(w1);
+  } else {
+    if(btn) btn.style.display='inline-block';
+    if(body) body.textContent='Review your cart and pay.';
+    if(err) err.style.display='none';
+  }
+}
+function doPay(){
+  const isFlake = location.href.includes('flake=1');
+  if(isFlake){ renderCheckout(); return; }
+  document.getElementById('paySuccess').style.display='block';
+  console.log('Pay success');
+}
+updateCart();
+renderCheckout();
+</script>
+</body>
+</html>

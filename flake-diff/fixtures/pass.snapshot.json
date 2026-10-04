@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "2.0",
+  "captureMode": "lite",
+  "timestamp": "2026-10-04T07:52:17.567422500Z",
+  "testName": "testPass",
+  "status": "PASS",
+  "meta": {
+    "url": "file:///demo-app/index.html#checkout",
+    "queryParams": {},
+    "title": "Demo Shop - Flake Diff Sample App",
+    "userAgentHash": "33",
+    "viewport": {
+      "height": 651,
+      "width": 1267
+    }
+  },
+  "dom": {
+    "bodyText": "Demo Shop \u2014 flake demo (?flake=1 hides Pay)\nLogin Products Checkout 1\nCheckout\n\nReview your cart and pay.\n\nCart: 1 items (IDs: 1)\nPay $ 10",
+    "counts": {
+      "byTag": {
+        "a": 3,
+        "b": 4,
+        "body": 1,
+        "button": 7,
+        "code": 1,
+        "div": 18,
+        "h2": 3,
+        "head": 1,
+        "html": 1,
+        "input": 2,
+        "label": 2,
+        "meta": 2,
+        "p": 2,
+        "script": 1,
+        "span": 3,
+        "style": 1,
+        "title": 1
+      },
+      "total": 53,
+      "visible": 19
+    },
+    "htmlSnippet": "<html lang=\"en\"><head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Demo Shop \u2014 Flake Diff Sample App</title>\n\n</head>\n<body>\n<div class=\"nav\">\n  <div><b>Demo Shop</b> <span style=\"font-size:11px;color:#94a3b8\">\u2014 flake demo (?flake=1 hides Pay)</span></div>\n  <div>\n    <a href=\"#login\" id=\"nav-login\" class=\"\">Login</a>\n    <a href=\"#products\" id=\"nav-products\" class=\"\">Products</a>\n    <a href=\"#checkout\" id=\"nav-checkout\" class=\"active\">Checkout <span id=\"cartCount\" class=\"badge\">1</span></a>\n  </div>\n</div>\n<div class=\"wrap\">\n  <!-- LOGIN -->\n  <div id=\"view-login\" class=\"card\" style=\"display: none;\">\n    <h2>Login</h2>\n    <p class=\"hint\">Any username/password works. Deterministic flow for Selenium.</p>\n    <label>Username</label><input id=\"username\" data-testid=\"input-username\" placeholder=\"tester\">\n    <label>Password</label><input id=\"password\" data-testid=\"input-password\" type=\"password\" placeholder=\"\u2022\u2022\u2022\u2022\">\n    <button class=\"btn\" data-testid=\"btn-login\" onclick=\"doLogin()\">Login \u2192 Products</button>\n    <div class=\"hint\">Sets <code>localStorage.token</code> and goes to #products</div>\n  </div>\n  <!-- PRODUCTS -->\n  <div id=\"view-products\" class=\"card\" style=\"display: none;\">\n    <h2>Products</h2>\n    <div class=\"product\" data-testid=\"product-1\"><div><b>Widget A</b> \u2014 $10</div><button class=\"btn\" data-testid=\"btn-add-1\" onclick=\"addToCart(1)\">Add to Cart</button></div>\n    <div class=\"product\" data-testid=\"product-2\"><div><b>Widget B</b> \u2014 $20</div><button class=\"btn\" data-testid=\"btn-add-2\" onclick=\"addToCart(2)\">Add to Cart</button></div>\n    <div class=\"product\" data-testid=\"product-3\"><div><b>Widget C</b> \u2014 $30</div><button class=\"btn\" data-testid=\"btn-add-3\" onclick=\"addToCart(3)\">Add to Cart</button></div>\n    <div style=\"margin-top:14px;display:flex;gap:8px\">\n      <button class=\"btn\" data-testid=\"btn-go-checkout\" onclick=\"location.hash='#checkout'\">Go to Checkout \u2192</button>\n      <button class=\"btn-ghost\" onclick=\"clearCart()\">Clear Cart</button>\n    </div>\n  </div>\n  <!-- CHECKOUT -->\n  <div id=\"view-checkout\" class=\"card\" style=\"display: block;\">\n    <h2>Checkout</h2>\n    <p id=\"checkoutBody\" data-testid=\"checkout-body\">Review your cart and pay.</p>\n    <div id=\"cartDetails\" class=\"hint\">Cart: 1 items (IDs: 1)</div>\n    <button class=\"btn\" data-testid=\"btn-pay\" onclick=\"doPay()\" style=\"display: inline-block;\">Pay $ <span id=\"payAmount\">10</span></button>\n    <div id=\"payError\" class=\"error\" data-testid=\"error-msg\" style=\"display: none;\"></div>\n    <div id=\"paySuccess\" style=\"display:none;background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:10px;border-radius:10px;margin-top:12px\" data-testid=\"success-msg\">Payment success! Order #12345</div>\n  </div>\n</div>\n\n\n\n</body></html>",
+    "locatorInventory": [
+      {
+        "count": 1,
+        "selector": "[data-testid=\"input-username\"]",
+        "testId": "input-username"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"input-password\"]",
+        "testId": "input-password"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"btn-login\"]",
+        "testId": "btn-login"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"product-1\"]",
+        "testId": "product-1"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"btn-add-1\"]",
+        "testId": "btn-add-1"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"product-2\"]",
+        "testId": "product-2"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"btn-add-2\"]",
+        "testId": "btn-add-2"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"product-3\"]",
+        "testId": "product-3"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"btn-add-3\"]",
+        "testId": "btn-add-3"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"btn-go-checkout\"]",
+        "testId": "btn-go-checkout"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"checkout-body\"]",
+        "testId": "checkout-body"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"btn-pay\"]",
+        "testId": "btn-pay"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"error-msg\"]",
+        "testId": "error-msg"
+      },
+      {
+        "count": 1,
+        "selector": "[data-testid=\"success-msg\"]",
+        "testId": "success-msg"
+      },
+      {
+        "count": 1,
+        "id": "nav-login",
+        "selector": "#nav-login"
+      },
+      {
+        "count": 1,
+        "id": "nav-products",
+        "selector": "#nav-products"
+      },
+      {
+        "count": 1,
+        "id": "nav-checkout",
+        "selector": "#nav-checkout"
+      },
+      {
+        "count": 1,
+        "id": "cartCount",
+        "selector": "#cartCount"
+      },
+      {
+        "count": 1,
+        "id": "view-login",
+        "selector": "#view-login"
+      },
+      {
+        "count": 1,
+        "id": "view-products",
+        "selector": "#view-products"
+      },
+      {
+        "count": 1,
+        "id": "view-checkout",
+        "selector": "#view-checkout"
+      },
+      {
+        "count": 1,
+        "id": "cartDetails",
+        "selector": "#cartDetails"
+      },
+      {
+        "count": 1,
+        "id": "payAmount",
+        "selector": "#payAmount"
+      },
+      {
+        "count": 1,
+        "name": "viewport",
+        "selector": "[name=\"viewport\"]"
+      }
+    ],
+    "testIds": {
+      "btn-add-1": 1,
+      "btn-add-2": 1,
+      "btn-add-3": 1,
+      "btn-go-checkout": 1,
+      "btn-login": 1,
+      "btn-pay": 1,
+      "checkout-body": 1,
+      "error-msg": 1,
+      "input-password": 1,
+      "input-username": 1,
+      "product-1": 1,
+      "product-2": 1,
+      "product-3": 1,
+      "success-msg": 1
+    },
+    "visibility": {
+      "hiddenCount": 34,
+      "offscreenCount": 0
+    }
+  },
+  "console": {
+    "errorHashes": [],
+    "errors": [],
+    "warnings": []
+  },
+  "storage": {
+    "count": 3,
+    "local": [
+      {
+        "key": "token",
+        "size": 26,
+        "truncated": false,
+        "valueHash": "-fk18md"
+      },
+      {
+        "key": "user",
+        "size": 6,
+        "truncated": false,
+        "valueHash": "-ei8sap"
+      },
+      {
+        "key": "cart",
+        "size": 3,
+        "truncated": false,
+        "valueHash": "1wpz"
+      }
+    ],
+    "session": []
+  },
+  "cookies": [],
+  "config": {
+    "redact": true,
+    "maxStorageKeys": 10,
+    "maxHtml": 20000
+  }
+}

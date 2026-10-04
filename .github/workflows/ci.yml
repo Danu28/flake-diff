@@ -1,0 +1,31 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { java-version: '11', distribution: 'temurin', cache: 'maven' }
+      - name: Build flake-snapshot lib
+        run: mvn -f flake-diff/pom.xml verify -q
+      - name: Run sample Selenium (headless)
+        run: mvn -f sample-selenium/pom.xml test -Dheadless=true -q
+      - name: Verify snapshots exist and are PII-safe
+        run: |
+          ls -lh sample-selenium/target/snapshots/ || ls -lh target/snapshots/ || true
+          python -c "import json,glob; files=glob.glob('sample-selenium/target/snapshots/*.json')+glob.glob('target/snapshots/*.json'); assert files, 'no snapshots'; [print(f, len(open(f).read())) for f in files]; [__import__('json').load(open(f)).__getitem__('config').__getitem__('redact') or exit(1) for f in files]; print('PII check ok: no preview field'); assert all('preview' not in open(f).read() or 'preview' not in json.load(open(f))['storage']['local'][0] for f in files if json.load(open(f)).get('storage'))"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: allure-results, path: sample-selenium/target/snapshots }
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint extension
+        run: |
+          python -c "import json; json.load(open('flake-diff/extension/manifest.json')); print('manifest ok')"
+          node --check flake-diff/extension/app.js && echo "app.js syntax ok"
+          test -f flake-diff/extension/icon48.png && echo "icons ok"
+      - name: Validate fixtures (PII)
+        run: python -c "import json; [__import__('json').load(open(f)) for f in ['flake-diff/fixtures/pass.snapshot.json','flake-diff/fixtures/fail.snapshot.json']]; assert all('preview' not in json.dumps(json.load(open(f))) for f in ['flake-diff/fixtures/pass.snapshot.json','flake-diff/fixtures/fail.snapshot.json']), 'preview leak in fixtures'; print('fixtures ok')"
