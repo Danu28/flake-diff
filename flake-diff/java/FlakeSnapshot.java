@@ -4,6 +4,7 @@ import io.qameta.allure.Allure;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
@@ -23,8 +24,8 @@ public class FlakeSnapshot {
     private static final int MAX_STORAGE_VALUE = 500;
     private static final int MAX_COOKIES = 20;
     private static final int MAX_ERRORS = 20;
-    /** Compact JSON — saves ~15% vs pretty, keeps <1MB budget */
-    private static final Gson GSON = new Gson();
+    /** Pretty JSON — human-readable, valid, Allure-friendly */
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     /** Set to false for local debug only — never in CI */
     private static final boolean REDACT = true;
 
